@@ -140,9 +140,9 @@
   // ─── MUSIC TOGGLE ───
   let musicPlaying = false;
   const musicBtn = document.getElementById('music-btn');
-  const bgAudio = new Audio('assets/audio/audio.mp3');
+  const bgAudio = new Audio('assets/audio/audiofile.mp3');
   bgAudio.loop = true;
-  bgAudio.volume = 0.65;
+  bgAudio.volume = 0.5;
   bgAudio.preload = 'auto';
 
   musicBtn.addEventListener('click', async () => {
