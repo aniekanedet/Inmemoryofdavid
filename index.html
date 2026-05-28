@@ -402,9 +402,10 @@
         <p class="tribute-form-section__sub">Your words of remembrance will be cherished forever by his family.</p>
       </div>
 
-      <form name="tribute-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="tribute-form reveal" id="tribute-form-el" novalidate>
+      <form name="tribute-form" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" class="tribute-form reveal" id="tribute-form-el" novalidate>
         <!-- Netlify spam protection -->
         <input type="hidden" name="bot-field" />
+        <input type="hidden" name="form-name" value="tribute-form" />
 
         <div class="form-row">
           <div class="form-field">
@@ -449,6 +450,8 @@
             <div>
               <label class="upload-sec-zone" for="shared-photo">
                 <input type="file" id="shared-photo" name="shared_photo" accept="image/*" />
+                <img id="prev-shared" class="upload-sec__preview" src="" alt="Shared photo preview" style="display:none" />
+                <button type="button" class="upload-sec__remove" id="rm-shared" aria-label="Remove shared photo" style="display:none">✕</button>
                 <div class="upload-sec__icon">📸</div>
                 <div class="upload-sec__text"><strong>Choose photo</strong> or drag here</div>
               </label>

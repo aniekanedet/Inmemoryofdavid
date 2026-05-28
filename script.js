@@ -122,6 +122,44 @@
     });
   });
 
+  // Shared photo preview (upload-sec)
+  const sharedInput = document.getElementById('shared-photo');
+  const sharedPreview = document.getElementById('prev-shared');
+  const rmShared = document.getElementById('rm-shared');
+  if (sharedInput) {
+    sharedInput.addEventListener('change', function() {
+      const file = this.files && this.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        sharedPreview.src = url;
+        sharedPreview.style.display = 'block';
+        rmShared.style.display = 'flex';
+      } else {
+        if (sharedPreview.src) URL.revokeObjectURL(sharedPreview.src);
+        sharedPreview.src = '';
+        sharedPreview.style.display = 'none';
+        rmShared.style.display = 'none';
+      }
+    });
+  }
+
+  // Expose removePhoto to global scope for inline handlers
+  window.removePhoto = function(which) {
+    if (which === 'shared') {
+      if (!sharedInput) return;
+      sharedInput.value = '';
+      if (sharedPreview && sharedPreview.src) {
+        try { URL.revokeObjectURL(sharedPreview.src); } catch (e) {}
+        sharedPreview.src = '';
+        sharedPreview.style.display = 'none';
+      }
+      if (rmShared) rmShared.style.display = 'none';
+    }
+  };
+
+  // Wire remove button
+  if (rmShared) rmShared.addEventListener('click', () => removePhoto('shared'));
+
   // ─── TRIBUTE FORM SUBMISSION (Netlify Forms) ───
   document.getElementById('tribute-form-el').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -133,14 +171,13 @@
     txt.textContent = 'Submitting…';
 
     try {
-      // Collect form data
+      // Collect form data (includes file inputs)
       const formData = new FormData(form);
-      
-      // Submit to Netlify Forms endpoint
+
+      // Submit to Netlify Forms endpoint using multipart/form-data so files are sent
       const response = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData)
+        body: formData
       });
 
       if (response.ok) {
