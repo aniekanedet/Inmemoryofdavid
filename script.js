@@ -122,19 +122,41 @@
     });
   });
 
-  // ─── TRIBUTE FORM SUBMISSION ───
+  // ─── TRIBUTE FORM SUBMISSION (Netlify Forms) ───
   document.getElementById('tribute-form-el').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submit-btn');
     const txt = document.getElementById('submit-text');
+    const form = this;
+    
     btn.disabled = true;
     txt.textContent = 'Submitting…';
 
-    // Simulate async submission (replace with Supabase call)
-    await new Promise(r => setTimeout(r, 1400));
+    try {
+      // Collect form data
+      const formData = new FormData(form);
+      
+      // Submit to Netlify Forms endpoint
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData)
+      });
 
-    document.getElementById('tribute-form-el').style.display = 'none';
-    document.getElementById('form-success').style.display = 'block';
+      if (response.ok) {
+        // Success: hide form and show success message
+        form.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Tribute form submission error:', error);
+      // Reset button on error
+      btn.disabled = false;
+      txt.textContent = 'Submit Tribute';
+      alert('There was an error submitting your tribute. Please try again.');
+    }
   });
 
   // ─── MUSIC TOGGLE ───
